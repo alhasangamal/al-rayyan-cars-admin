@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-cairo), system-ui, sans-serif;
+}
+
+:root {
+  --background: #020617;
+  --foreground: #f8fafc;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+::selection {
+  background: rgba(103, 232, 249, 0.35);
+}

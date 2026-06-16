@@ -1,0 +1,17 @@
+/node_modules
+/.next
+/out
+/build
+.env*
+!.env.example
+*.tsbuildinfo
+next-env.d.ts
+npm-debug.log*
+yarn-error.log*
+.DS_Store
+
+# runtime uploads/private documents
+/public/uploads/customers/
+/public/uploads/invoices/
+/public/uploads/receipts/
+/public/uploads/rentals/

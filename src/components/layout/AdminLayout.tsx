@@ -1,6 +1,7 @@
 import Sidebar from './Sidebar';
 import Topbar from './Topbar';
 import MobileNav from './MobileNav';
+import SessionTimeout from './SessionTimeout';
 import { requireEmployee } from '@/lib/auth';
 import { getOfficeSettings } from '@/lib/settings';
 import { getNotificationItems } from '@/lib/notifications';
@@ -23,6 +24,7 @@ export default async function AdminLayout({ children, title }: AdminLayoutProps)
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-slate-950 text-slate-100">
+      <SessionTimeout />
       <AnimatedBackgroundGlow />
       <Sidebar settings={settings} role={employee.role} />
       <div className="min-h-screen lg:pr-72">

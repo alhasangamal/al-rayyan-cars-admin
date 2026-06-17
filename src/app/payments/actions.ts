@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation';
 import { requireEmployee } from '@/lib/auth';
 import { logAction } from '@/lib/audit';
 import { query } from '@/lib/db';
+import { sendWhatsAppMessage } from '@/lib/whatsapp';
 
 export interface PaymentFormState {
   error?: string;
@@ -46,6 +47,34 @@ export async function createPaymentAction(_prevState: PaymentFormState, formData
     entityId: rows[0].id,
     details: { rentalId, amount, paymentMethod },
   });
+
+  try {
+    const paymentDetails = await query<{
+      customer_phone: string;
+      customer_name: string;
+      car_name: string;
+      rental_number: string;
+      total_cost: number;
+      paid_amount: number;
+      remaining_amount: number;
+    }>(
+      `SELECT c.phone AS customer_phone, c.full_name AS customer_name, cars.car_name,
+              r.rental_number, r.total_cost, r.paid_amount, r.remaining_amount
+       FROM rentals r
+       JOIN customers c ON c.id = r.customer_id
+       JOIN cars ON cars.id = r.car_id
+       WHERE r.id = $1 LIMIT 1`,
+      [rentalId]
+    );
+
+    if (paymentDetails.length > 0) {
+      const details = paymentDetails[0];
+      const waMessage = `نشكركم على التعامل مع مكتب الريان لتأجير السيارات 🌹\n\nتم استلام دفعة مالية بقيمة: ${amount} جنيه\nرقم التأجير: ${details.rental_number}\nالسيارة: ${details.car_name}\n\nتفاصيل الحساب المالي الحالي:\nالإجمالي: ${details.total_cost} جنيه\nإجمالي المدفوع: ${details.paid_amount} جنيه\nالمتبقي: ${details.remaining_amount} جنيه\n\nنتمنى لك رحلة آمنة وسعيدة!`;
+      await sendWhatsAppMessage(details.customer_phone, waMessage);
+    }
+  } catch (error) {
+    console.error('Error sending WhatsApp payment notification:', error);
+  }
 
   revalidatePath('/payments');
   revalidatePath('/invoices');

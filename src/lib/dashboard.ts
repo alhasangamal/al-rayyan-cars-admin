@@ -93,3 +93,29 @@ export async function getPendingPaymentRentals() {
 
   return rows.map((row) => ({ ...row, remaining_amount: Number(row.remaining_amount) }));
 }
+
+export async function getMonthlyRentalStats() {
+  const rows = await query<{ date_label: string; count: number }>(`
+    SELECT TO_CHAR(month_series, 'Mon YYYY') AS date_label,
+           COUNT(r.id)::int AS count
+    FROM generate_series(DATE_TRUNC('month', CURRENT_DATE - INTERVAL '5 months'), DATE_TRUNC('month', CURRENT_DATE), '1 month'::interval) AS month_series
+    LEFT JOIN rentals r ON DATE_TRUNC('month', r.created_at) = month_series
+    GROUP BY month_series
+    ORDER BY month_series ASC
+  `);
+  
+  return rows.map(r => ({ name: r.date_label, value: r.count }));
+}
+
+export async function getDailyRentalStats() {
+  const rows = await query<{ date_label: string; count: number }>(`
+    SELECT TO_CHAR(date_series, 'Mon DD') AS date_label,
+           COUNT(r.id)::int AS count
+    FROM generate_series(CURRENT_DATE - INTERVAL '14 days', CURRENT_DATE, '1 day'::interval) AS date_series
+    LEFT JOIN rentals r ON r.created_at::date = date_series::date
+    GROUP BY date_series
+    ORDER BY date_series ASC
+  `);
+  
+  return rows.map(r => ({ name: r.date_label, value: r.count }));
+}

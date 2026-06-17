@@ -9,6 +9,10 @@
   --foreground: #f8fafc;
 }
 
+input[type="date"] {
+  color-scheme: dark;
+}
+
 html {
   scroll-behavior: smooth;
 }

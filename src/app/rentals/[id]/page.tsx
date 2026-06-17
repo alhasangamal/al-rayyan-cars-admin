@@ -8,6 +8,7 @@ import { completeRentalAction } from '../actions';
 import { CheckCircle2, ReceiptText, WalletCards } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import SendReminderButton from '@/components/ui/SendReminderButton';
 
 const statusTone: Record<string, 'success' | 'warning' | 'danger' | 'neutral'> = {
   active: 'success',
@@ -58,13 +59,16 @@ export default async function RentalDetailsPage({ params }: RentalDetailsPagePro
             </div>
             <div className="flex flex-wrap gap-3">
               {['active', 'overdue'].includes(rental.status) && (
-                <form action={completeRentalAction}>
-                  <input type="hidden" name="rental_id" value={rental.id} />
-                  <button className="inline-flex items-center gap-2 rounded-full border border-emerald-300/25 px-5 py-3 text-sm font-extrabold text-emerald-100 transition hover:bg-emerald-300/10">
-                    <CheckCircle2 className="h-4 w-4" />
-                    إنهاء التأجير
-                  </button>
-                </form>
+                <>
+                  <SendReminderButton rentalId={rental.id} isOverdue={rental.status === 'overdue' || new Date(rental.end_date) < new Date()} />
+                  <form action={completeRentalAction}>
+                    <input type="hidden" name="rental_id" value={rental.id} />
+                    <button className="inline-flex items-center gap-2 rounded-full border border-emerald-300/25 px-5 py-3 text-sm font-extrabold text-emerald-100 transition hover:bg-emerald-300/10">
+                      <CheckCircle2 className="h-4 w-4" />
+                      إنهاء التأجير
+                    </button>
+                  </form>
+                </>
               )}
               <Link href="/payments" className="inline-flex items-center gap-2 rounded-full border border-cyan-300/25 px-5 py-3 text-sm font-extrabold text-cyan-100 transition hover:bg-cyan-300/10">
                 <WalletCards className="h-4 w-4" />

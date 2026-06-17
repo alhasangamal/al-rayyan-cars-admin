@@ -2,7 +2,8 @@ import AdminLayout from '@/components/layout/AdminLayout';
 import MotionPanel from '@/components/ui/MotionPanel';
 import StatCard from '@/components/ui/StatCard';
 import StatusBadge from '@/components/ui/StatusBadge';
-import { getDashboardStats, getPendingPaymentRentals, getRecentRentals, getTodayReturnRentals } from '@/lib/dashboard';
+import DashboardCharts from '@/components/ui/DashboardCharts';
+import { getDashboardStats, getPendingPaymentRentals, getRecentRentals, getTodayReturnRentals, getMonthlyRentalStats, getDailyRentalStats } from '@/lib/dashboard';
 import { pageTitles } from '@/lib/page-meta';
 import { AlertTriangle, Car, CreditCard, FilePlus2, RotateCcw, UserPlus, WalletCards } from 'lucide-react';
 import Link from 'next/link';
@@ -24,11 +25,13 @@ const rentalStatusTone: Record<string, 'success' | 'warning' | 'danger' | 'neutr
 };
 
 export default async function DashboardPage() {
-  const [stats, recentRentals, returnToday, pendingPayments] = await Promise.all([
+  const [stats, recentRentals, returnToday, pendingPayments, monthlyData, dailyData] = await Promise.all([
     getDashboardStats(),
     getRecentRentals(),
     getTodayReturnRentals(),
     getPendingPaymentRentals(),
+    getMonthlyRentalStats(),
+    getDailyRentalStats(),
   ]);
 
   return (
@@ -69,6 +72,10 @@ export default async function DashboardPage() {
           <StatCard label="سيارات متاحة" value={String(stats.availableCars)} numericValue={stats.availableCars} icon="gauge" tone="emerald" />
           <StatCard label="التأجيرات النشطة" value={String(stats.activeRentals)} numericValue={stats.activeRentals} icon="trending" tone="blue" />
           <StatCard label="مدفوعات اليوم" value={`${stats.todayPayments.toLocaleString('en-US')} جنيه`} numericValue={stats.todayPayments} suffix=" جنيه" icon="wallet" tone="amber" />
+        </div>
+
+        <div className="grid grid-cols-1 gap-6">
+          <DashboardCharts monthlyData={monthlyData} dailyData={dailyData} />
         </div>
 
         {stats.overdueRentals > 0 && (
@@ -157,8 +164,8 @@ export default async function DashboardPage() {
                 </thead>
                 <tbody className="divide-y divide-white/10">
                   {recentRentals.map((rental) => (
-                    <tr key={rental.id}>
-                      <td className="px-4 py-3 font-bold text-white">{rental.rental_number}</td>
+                    <tr key={rental.id} className="group cursor-pointer transition-colors hover:bg-white/5">
+                      <td className="px-4 py-3 font-bold text-white transition-colors group-hover:text-cyan-200">{rental.rental_number}</td>
                       <td className="px-4 py-3 text-slate-300">{rental.customer_name}</td>
                       <td className="px-4 py-3 text-slate-300">{rental.car_name}</td>
                       <td className="px-4 py-3 text-cyan-100">{Number(rental.total_cost).toLocaleString('en-US')} جنيه</td>

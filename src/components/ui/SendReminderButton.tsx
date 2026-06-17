@@ -9,7 +9,12 @@ interface SendReminderButtonProps {
   isOverdue: boolean;
 }
 
-const initialState = {};
+interface ActionState {
+  success?: boolean;
+  error?: string;
+}
+
+const initialState: ActionState = {};
 
 export default function SendReminderButton({ rentalId, isOverdue }: SendReminderButtonProps) {
   const [state, formAction, isPending] = useActionState(sendWhatsAppReminderAction, initialState);

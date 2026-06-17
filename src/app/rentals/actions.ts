@@ -35,7 +35,7 @@ export async function createRentalAction(_prevState: RentalFormState, formData: 
 
   const validationResult = rentalSchema.safeParse({ customerId, carId, startDate, endDate, paidAmount });
   if (!validationResult.success) {
-    return { error: validationResult.error.errors[0].message };
+    return { error: validationResult.error.issues[0].message };
   }
 
   const carRows = await query<{ car_name: string; daily_rental_price: number; status: string }>(

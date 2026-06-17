@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import MotionPanel from './MotionPanel';
 
@@ -11,7 +11,29 @@ interface DashboardChartsProps {
 
 export default function DashboardCharts({ monthlyData, dailyData }: DashboardChartsProps) {
   const [view, setView] = useState<'monthly' | 'daily'>('monthly');
+  const [mounted, setMounted] = useState(false);
   const data = view === 'monthly' ? monthlyData : dailyData;
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <MotionPanel className="rounded-[2rem] border border-white/10 bg-white/[0.055] p-6 shadow-2xl shadow-black/25 backdrop-blur-xl">
+        <div className="mb-5 flex items-center justify-between">
+          <div>
+            <h2 className="text-xl font-extrabold text-white">إحصائيات الإيجار</h2>
+            <p className="mt-1 text-sm text-slate-400">جاري تحميل الإحصائيات...</p>
+          </div>
+        </div>
+        <div className="h-[300px] w-full flex items-center justify-center text-slate-500">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-cyan-400 border-t-transparent" />
+        </div>
+      </MotionPanel>
+    );
+  }
 
   return (
     <MotionPanel className="rounded-[2rem] border border-white/10 bg-white/[0.055] p-6 shadow-2xl shadow-black/25 backdrop-blur-xl">

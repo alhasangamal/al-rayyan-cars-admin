@@ -26,11 +26,11 @@ export async function updateOfficeSettingsAction(_prevState: SettingsFormState, 
 
   const officeName = textValue(formData, 'office_name');
   const tagline = textValue(formData, 'tagline');
-  const logoPath = textValue(formData, 'logo_path') || '/logo-transparent.png';
+  const logoPath = textValue(formData, 'logo_path') || '/logo-cropped.png';
 
   if (officeName.length < 2) return { error: 'اكتب اسم المكتب بشكل صحيح.' };
   if (tagline.length < 3) return { error: 'اكتب شعار المكتب.' };
-  if (!logoPath.startsWith('/')) return { error: 'مسار اللوجو يجب أن يبدأ بـ / مثل /logo-transparent.png' };
+  if (!logoPath.startsWith('/')) return { error: 'مسار اللوجو يجب أن يبدأ بـ / مثل /logo-cropped.png' };
 
   await query(
     `INSERT INTO office_settings (id, office_name, tagline, phone, whatsapp, email, address, logo_path)

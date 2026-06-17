@@ -9,7 +9,7 @@ export const fallbackSettings: OfficeSettings = {
   whatsapp: '01033257024',
   email: 'admin@alrayyan-cars.com',
   address: 'مصر',
-  logo_path: '/logo-transparent.png',
+  logo_path: '/logo-cropped.png',
 };
 
 export async function getOfficeSettings(): Promise<OfficeSettings> {

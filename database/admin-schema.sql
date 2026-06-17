@@ -165,7 +165,7 @@ CREATE TABLE IF NOT EXISTS office_settings (
     whatsapp VARCHAR(50),
     email VARCHAR(150),
     address TEXT,
-    logo_path TEXT NOT NULL DEFAULT '/logo-transparent.png',
+    logo_path TEXT NOT NULL DEFAULT '/logo-cropped.png',
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT office_settings_single_row CHECK (id = 1)
 );
@@ -452,7 +452,7 @@ VALUES (
     '01033257024',
     'admin@alrayyan-cars.com',
     'مصر',
-    '/logo-transparent.png'
+    '/logo-cropped.png'
 )
 ON CONFLICT (id) DO NOTHING;
 
